@@ -1,1 +1,88 @@
 
+name: Docker Image Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-image:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build the image
+        run: docker build -t dummy-app:latest .
+
+      - name: Save the image
+        run: docker save -o my-image.tar dummy-app:latest
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: my-image.tar
+
+  tag-image:
+    if: github.event_name == 'push'
+    needs: build-image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download the artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load the image
+        run: docker load -i my-image.tar
+
+      - name: Tag the image
+        run: |
+          docker image tag dummy-app:latest \
+            ${{ secrets.DOCKERUSER }}/dummy-app:latest
+
+      - name: Save tagged image
+        run: |
+          docker save -o tag-image.tar \
+            ${{ secrets.DOCKERUSER }}/dummy-app:latest
+
+      - name: Upload tagged artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tag-image
+          path: tag-image.tar
+
+  push-image:
+    if: github.event_name == 'push'
+    needs: tag-image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download the artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tag-image
+
+      - name: Load the image
+        run: docker load -i tag-image.tar
+
+      - name: Login into Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERUSER }}
+          password: ${{ secrets.DOCKERAPI }}
+
+      - name: Push to Docker Hub
+        run: |
+          docker push \
+            ${{ secrets.DOCKERUSER }}/dummy-app:latest
+
+  
+      
