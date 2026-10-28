@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milky Macaron Bakery</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <a href="#" class="logo">Milky Macaron</a>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#menu">Menu</a>
+            <a href="#cart">Cart</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <p class="eyebrow">FRESHLY BAKED WITH LOVE</p>
+            <h1>A Little Sweetness<br>in Every Bite.</h1>
+            <p>
+                Discover your favourite macarons, cookies and
+                bakery treats.
+            </p>
+            <a class="primary-button" href="#menu">Explore Menu</a>
+        </section>
+
+        <section id="menu" class="section">
+            <p class="eyebrow">OUR MENU</p>
+            <h2>Sweet Little Treats</h2>
+            <p class="section-description">
+                Pick your favourites and try checking out.
+            </p>
+
+            <div id="product-list" class="product-grid"></div>
+        </section>
+
+        <section id="cart" class="section cart-section">
+            <p class="eyebrow">YOUR ORDER</p>
+            <h2>Shopping Cart</h2>
+
+            <div id="cart-items">
+                <p class="empty-cart">Your cart is empty.</p>
+            </div>
+
+            <div class="cart-footer">
+                <p>Total: <strong id="cart-total">₹0</strong></p>
+                <button id="checkout-button"
+                        class="primary-button"
+                        type="button">
+                    Proceed to Checkout
+                </button>
+            </div>
+
+            <p id="checkout-status"
+               class="checkout-status"
+               role="status"
+               aria-live="polite"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 Milky Macaron Bakery · Baked with love.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
